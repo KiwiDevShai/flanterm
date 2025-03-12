@@ -1346,8 +1346,21 @@ unicode_error:
     }
 }
 
+void flanterm_full_refresh(struct flanterm_context *ctx) {
+    ctx->full_refresh(ctx);
+}
+
 void flanterm_deinit(struct flanterm_context *ctx, void (*_free)(void *, size_t)) {
     ctx->deinit(ctx, _free);
+}
+
+void flanterm_get_dimensions(struct flanterm_context *ctx, size_t *cols, size_t *rows) {
+    *cols = ctx->cols;
+    *rows = ctx->rows;
+}
+
+void flanterm_set_autoflush(struct flanterm_context *ctx, bool state) {
+    ctx->autoflush = state;
 }
 
 void flanterm_set_callback(struct flanterm_context *ctx, void (*callback)(struct flanterm_context *, uint64_t, uint64_t, uint64_t, uint64_t)) {
