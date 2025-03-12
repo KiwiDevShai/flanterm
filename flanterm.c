@@ -1374,3 +1374,11 @@ void flanterm_set_autoflush(struct flanterm_context *ctx, bool state) {
 void flanterm_set_callback(struct flanterm_context *ctx, void (*callback)(struct flanterm_context *, uint64_t, uint64_t, uint64_t, uint64_t)) {
     ctx->callback = callback;
 }
+
+uint64_t flanterm_get_oob_output(struct flanterm_context *ctx) {
+    return ctx->oob_output;
+}
+
+void flanterm_set_oob_output(struct flanterm_context *ctx, uint64_t oob_output) {
+    ctx->oob_output = oob_output;
+}
