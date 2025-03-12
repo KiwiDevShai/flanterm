@@ -23,6 +23,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef __cplusplus
+#error "Please do not compile Flanterm as C++ code! Flanterm should be compiled as C99 or newer."
+#endif
+
+#ifndef __STDC_VERSION__
+#error "Flanterm must be compiled as C99 or newer."
+#endif
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
