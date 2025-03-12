@@ -63,7 +63,6 @@ struct flanterm_context;
 
 #endif
 
-void flanterm_context_reinit(struct flanterm_context *ctx);
 void flanterm_write(struct flanterm_context *ctx, const char *buf, size_t count);
 
 void flanterm_full_refresh(struct flanterm_context *ctx);

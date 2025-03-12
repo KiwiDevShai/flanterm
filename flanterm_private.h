@@ -113,6 +113,8 @@ struct flanterm_context {
     void (*callback)(struct flanterm_context *, uint64_t, uint64_t, uint64_t, uint64_t);
 };
 
+void flanterm_context_reinit(struct flanterm_context *ctx);
+
 #ifdef __cplusplus
 }
 #endif
