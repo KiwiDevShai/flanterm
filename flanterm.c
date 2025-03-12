@@ -27,6 +27,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#define FLANTERM_IN_FLANTERM
+
 #include "flanterm.h"
 
 // Tries to implement this standard for terminfo
@@ -1342,4 +1344,12 @@ unicode_error:
     } else {
         ctx->raw_putchar(ctx, 0xfe);
     }
+}
+
+void flanterm_deinit(struct flanterm_context *ctx, void (*_free)(void *, size_t)) {
+    ctx->deinit(ctx, _free);
+}
+
+void flanterm_set_callback(struct flanterm_context *ctx, void (*callback)(struct flanterm_context *, uint64_t, uint64_t, uint64_t, uint64_t)) {
+    ctx->callback = callback;
 }

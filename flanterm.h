@@ -1,3 +1,4 @@
+
 /* Copyright (C) 2022-2025 mintsuki and contributors.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,6 +54,8 @@ extern "C" {
 #define FLANTERM_OOB_OUTPUT_ONLRET (1 << 5)
 #define FLANTERM_OOB_OUTPUT_ONOCR (1 << 6)
 #define FLANTERM_OOB_OUTPUT_OPOST (1 << 7)
+
+#ifdef FLANTERM_IN_FLANTERM
 
 struct flanterm_context {
     /* internal use */
@@ -127,8 +130,17 @@ struct flanterm_context {
     void (*callback)(struct flanterm_context *, uint64_t, uint64_t, uint64_t, uint64_t);
 };
 
+#else
+
+struct flanterm_context;
+
+#endif
+
 void flanterm_context_reinit(struct flanterm_context *ctx);
 void flanterm_write(struct flanterm_context *ctx, const char *buf, size_t count);
+
+void flanterm_deinit(struct flanterm_context *ctx, void (*_free)(void *, size_t));
+void flanterm_set_callback(struct flanterm_context *ctx, void (*callback)(struct flanterm_context *, uint64_t, uint64_t, uint64_t, uint64_t));
 
 #ifdef __cplusplus
 }

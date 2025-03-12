@@ -36,6 +36,8 @@ extern "C" {
 
 #include "../flanterm.h"
 
+#ifdef FLANTERM_IN_FLANTERM
+
 #define FLANTERM_FB_FONT_GLYPHS 256
 
 struct flanterm_fb_char {
@@ -111,6 +113,8 @@ struct flanterm_fb_context {
     size_t old_cursor_x;
     size_t old_cursor_y;
 };
+
+#endif
 
 struct flanterm_context *flanterm_fb_init(
     /* If _malloc and _free are nulled, use the bump allocated instance (1 use only). */

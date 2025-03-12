@@ -27,6 +27,8 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#define FLANTERM_IN_FLANTERM
+
 #include "../flanterm.h"
 #include "fb.h"
 
