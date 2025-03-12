@@ -1354,6 +1354,10 @@ unicode_error:
     }
 }
 
+void flanterm_flush(struct flanterm_context *ctx) {
+    ctx->double_buffer_flush(ctx);
+}
+
 void flanterm_full_refresh(struct flanterm_context *ctx) {
     ctx->full_refresh(ctx);
 }
