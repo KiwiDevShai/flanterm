@@ -43,7 +43,9 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifndef FLANTERM_IN_FLANTERM
 #define FLANTERM_IN_FLANTERM
+#endif
 
 #include "../flanterm.h"
 #include "fb.h"
