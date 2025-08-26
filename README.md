@@ -35,7 +35,7 @@ The meaning of the other arguments can be found in `flanterm_backends/fb.h`.
 To then print to the terminal instance, simply use the `flanterm_write()`
 function on the given instance. For example:
 ```c
-#include <flanterm/flanterm.h>
+#include <flanterm.h>
 
 const char msg[] = "Hello world\n";
 
