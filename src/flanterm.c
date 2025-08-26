@@ -566,6 +566,9 @@ static void control_sequence_parse(struct flanterm_context *ctx, uint8_t c) {
     }
 
     switch (c) {
+        // Got ESC in the middle of an escape sequence, start a new one
+        case 0x1B:
+            return;
         case 'F':
             x = 0;
             // FALLTHRU
