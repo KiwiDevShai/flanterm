@@ -96,6 +96,7 @@ void flanterm_context_reinit(struct flanterm_context *ctx) {
     ctx->reverse_video = false;
     ctx->dec_private = false;
     ctx->insert_mode = false;
+    ctx->csi_unhandled = false;
     ctx->unicode_remaining = 0;
     ctx->g_select = 0;
     ctx->charsets[0] = CHARSET_DEFAULT;
@@ -553,6 +554,16 @@ static void control_sequence_parse(struct flanterm_context *ctx, uint8_t c) {
     ctx->scroll_enabled = false;
     size_t x, y;
     ctx->get_cursor_pos(ctx, &x, &y);
+   
+    // CSI sequences are terminated by a byte in [0x40,0x7E]
+    // so skip all bytes until the terminator byte
+    if (ctx->csi_unhandled) {
+        if (c >= 0x40 && c <= 0x7E) {
+            ctx->csi_unhandled = false;
+            goto cleanup;
+        }
+        return;
+    }
 
     switch (c) {
         case 'F':
@@ -793,6 +804,9 @@ static void control_sequence_parse(struct flanterm_context *ctx, uint8_t c) {
         case ']':
             linux_private_parse(ctx);
             break;
+        default:
+            ctx->csi_unhandled = true;
+            return;
     }
 
     ctx->scroll_enabled = r;
@@ -855,6 +869,7 @@ static void escape_parse(struct flanterm_context *ctx, uint8_t c) {
                 ctx->esc_values[i] = 0;
             ctx->esc_values_i = 0;
             ctx->rrr = false;
+            ctx->csi_unhandled = false;
             ctx->control_sequence = true;
             return;
         case '7':
