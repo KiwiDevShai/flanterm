@@ -58,6 +58,7 @@ struct flanterm_context {
     bool reverse_video;
     bool dec_private;
     bool insert_mode;
+    bool csi_unhandled;
     uint64_t code_point;
     size_t unicode_remaining;
     uint8_t g_select;
