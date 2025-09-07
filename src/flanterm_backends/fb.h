@@ -61,6 +61,12 @@ struct flanterm_context *flanterm_fb_init(
     size_t margin
 );
 
+void flanterm_fb_set_font(struct flanterm_context *_ctx,
+                          void *font, size_t font_width, size_t font_height,
+                          size_t font_spacing,
+                          void *(*_malloc)(size_t),
+                          void (*_free)(void *, size_t));
+
 #ifdef __cplusplus
 }
 #endif

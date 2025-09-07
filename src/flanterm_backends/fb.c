@@ -1252,3 +1252,68 @@ fail:
 
     return NULL;
 }
+
+void flanterm_fb_set_font(struct flanterm_context *_ctx,
+                          void *font, size_t font_width, size_t font_height,
+                          size_t font_spacing,
+                          void *(*_malloc)(size_t),
+                          void (*_free)(void *, size_t)) {
+    struct flanterm_fb_context *ctx = (void *)_ctx;
+
+    // free old font data
+    if (ctx->font_bits && _free)
+        _free(ctx->font_bits, ctx->font_bits_size);
+    if (ctx->font_bool && _free)
+        _free(ctx->font_bool, ctx->font_bool_size);
+
+#define FONT_BYTES ((font_width * font_height * FLANTERM_FB_FONT_GLYPHS) / 8)
+
+    // allocate/copy font bits
+    ctx->font_width = font_width;
+    ctx->font_height = font_height;
+    ctx->font_bits_size = FONT_BYTES;
+    ctx->font_bits = _malloc(ctx->font_bits_size);
+    if (!ctx->font_bits)
+        return;
+    memcpy(ctx->font_bits, font, ctx->font_bits_size);
+
+    // apply spacing
+    ctx->font_width += font_spacing;
+
+    // allocate bool map
+    ctx->font_bool_size = FLANTERM_FB_FONT_GLYPHS * font_height * ctx->font_width * sizeof(bool);
+    ctx->font_bool = _malloc(ctx->font_bool_size);
+    if (!ctx->font_bool)
+        return;
+
+    // build bool map
+    for (size_t i = 0; i < FLANTERM_FB_FONT_GLYPHS; i++) {
+        uint8_t *glyph = &ctx->font_bits[i * font_height];
+
+        for (size_t y = 0; y < font_height; y++) {
+            // first 8 columns
+            for (size_t x = 0; x < 8; x++) {
+                size_t offset = i * font_height * ctx->font_width + y * ctx->font_width + x;
+                ctx->font_bool[offset] = (glyph[y] & (0x80 >> x)) != 0;
+            }
+            // extra columns like VGA
+            for (size_t x = 8; x < ctx->font_width; x++) {
+                size_t offset = i * font_height * ctx->font_width + y * ctx->font_width + x;
+                ctx->font_bool[offset] = (i >= 0xc0 && i <= 0xdf) ? (glyph[y] & 1) : false;
+            }
+        }
+    }
+
+#undef FONT_BYTES
+
+    // recompute glyph size
+    ctx->glyph_width = ctx->font_width * ctx->font_scale_x;
+    ctx->glyph_height = ctx->font_height * ctx->font_scale_y;
+
+    // update cols/rows
+    _ctx->cols = (ctx->width - ctx->offset_x * 2) / ctx->glyph_width;
+    _ctx->rows = (ctx->height - ctx->offset_y * 2) / ctx->glyph_height;
+
+    // redraw with new font
+    flanterm_fb_full_refresh(_ctx);
+}

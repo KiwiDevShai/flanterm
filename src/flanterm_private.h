@@ -42,7 +42,6 @@ extern "C" {
 
 struct flanterm_context {
     /* internal use */
-
     size_t tab_size;
     bool autoflush;
     bool cursor_enabled;
